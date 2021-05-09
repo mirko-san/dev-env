@@ -3,5 +3,5 @@
 
 ### command
 ```
-ansible all -i hosts -m ping
+ansible all -i hosts.yml -m ping
 ```
