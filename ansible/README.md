@@ -3,5 +3,5 @@
 
 ### command
 ```
-ansible all -i hosts.yml -m ping
+ansible-playbook -i hosts.yml site.yml
 ```

@@ -1,0 +1,73 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: Install zsh
+  become: yes
+  apt:
+    name: zsh
+    state: present
+
+- name: mkdir work direcrory
+  file:
+    path: $HOME/documents/git
+    state: directory
+
+- name: git clone dotfiles
+  ansible.builtin.git:
+    repo: git@github.com:mirko-san/dotfiles.git
+    dest: $HOME/documents/git/dotfiles
+
+- name: git clone prezto config
+  ignore_errors: yes
+  ansible.builtin.git:
+    repo: git@github.com:sorin-ionescu/prezto.git
+    dest: $HOME/.zprezto
+
+- name: setup prezto
+  ignore_errors: yes
+  shell: |
+    setopt EXTENDED_GLOB
+    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+    done
+
+- name: chsh
+  become: yes
+  command: chsh -s /bin/zsh
+
+- name: copy a .gitconfig
+  copy:
+    remote_src: yes
+    src: $HOME/documents/git/dotfiles/.gitconfig
+    dest: $HOME/.gitconfig
+
+- name: copy a .zpreztorc
+  copy:
+    remote_src: yes
+    src: $HOME/documents/git/dotfiles/.zpreztorc
+    dest: $HOME/.zprezto/runcoms/zpreztorc
+
+- name: copy a .tmux.conf
+  copy:
+    remote_src: yes
+    src: $HOME/documents/git/dotfiles/.tmux.conf
+    dest: $HOME/.tmux.conf
+
+- name: copy a .vimrc
+  copy:
+    remote_src: yes
+    src: $HOME/documents/git/dotfiles/.vimrc
+    dest: $HOME/.vimrc
+
+- name: add ppa git
+  become: yes
+  apt_repository:
+    repo: ppa:git-core/ppa
+
+# git のデフォルトブランチを main にするために 2.28.0 以上にする
+- name: update git
+  become: yes
+  apt:
+    name: git=1:2.31.1-0ppa1~ubuntu20.04.1
+    state: fixed
+    update_cache: yes
