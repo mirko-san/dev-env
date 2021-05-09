@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/focal64"
   config.vm.box_version = "20210506.0.0"
 
-  config.vm.define "env01" do |server|
+  config.vm.define "env01" do |server01|
     # Disable automatic box update checking. If you disable this, then
     # boxes will only be checked for updates when the user runs
     # `vagrant box outdated`. This is not recommended.
@@ -34,7 +34,9 @@ Vagrant.configure("2") do |config|
 
     # Create a private network, which allows host-only access to the machine
     # using a specific IP.
-    config.vm.network "private_network", ip: "192.168.33.10"
+    server01.vm.network "private_network", ip: "192.168.33.10"
+
+    server01.vm.hostname = "dev-env01"
 
     # Create a public network, which generally matched to bridged network.
     # Bridged networks make the machine appear as another physical device on
@@ -51,9 +53,9 @@ Vagrant.configure("2") do |config|
     # backing providers for Vagrant. These expose provider-specific options.
     # Example for VirtualBox:
     #
-    config.vm.provider "virtualbox" do |vb|
+    server01.vm.provider "virtualbox" do |vb|
     #   # Display the VirtualBox GUI when booting the machine
-    #   vb.gui = true
+      vb.gui = false
     #
       # Customize the amount of memory on the VM:
       vb.memory = "4096"
@@ -61,9 +63,13 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "env02" do |server|
-    config.vm.network "private_network", ip: "192.168.33.11"
-    config.vm.provider "virtualbox" do |vb|
+  config.vm.define "env02" do |server02|
+    server02.vm.network "private_network", ip: "192.168.33.11"
+
+    server02.vm.hostname = "dev-env02"
+
+    server02.vm.provider "virtualbox" do |vb|
+      vb.gui = false
       vb.memory = "4096"
       vb.cpus = 2
     end
@@ -75,8 +81,8 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+    echo $HOSTNAME
+    # ssh-keygen -t rsa -C "$HOSTNAME" -f "$HOME/.ssh/id_rsa" -P "" && cat $HOME/.ssh/id_rsa.pub
+  SHELL
 end
