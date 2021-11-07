@@ -1,0 +1,8 @@
+---
+
+- name: install make
+  become: yes
+  apt:
+    name: make
+    state: latest
+    update_cache: yes
