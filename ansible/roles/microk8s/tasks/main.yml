@@ -1,0 +1,20 @@
+---
+
+- name: Install snap
+  become: yes
+  apt:
+    name: snapd
+    state: latest
+    update_cache: yes
+
+# snap install microk8s --classic
+- name: Install "microk8s" with option --classic
+  become: yes
+  snap:
+    name: microk8s
+    classic: yes
+
+- name: Install "kustomize"
+  become: yes
+  snap:
+    name: kustomize
