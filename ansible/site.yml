@@ -10,3 +10,8 @@
   hosts: dev-env02
   roles:
     - go
+
+- name: apply microk8s configuration to dev-env02
+  hosts: dev-env02
+  roles:
+    - microk8s
