@@ -1,0 +1,17 @@
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: apply common configuration to all nodes
+  hosts: all
+  roles:
+    - common
+
+- name: apply go configuration to dev-env02
+  hosts: dev-env02
+  roles:
+    - go
+
+- name: apply microk8s configuration to dev-env02
+  hosts: dev-env02
+  roles:
+    - microk8s
