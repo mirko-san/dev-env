@@ -35,29 +35,29 @@
   become: yes
   command: chsh -s /bin/zsh
 
-- name: copy a .gitconfig
-  copy:
-    remote_src: yes
+- name: symlink a .gitconfig
+  ansible.builtin.file:
     src: $HOME/documents/git/dotfiles/.gitconfig
     dest: $HOME/.gitconfig
+    state: link
 
-- name: copy a .zpreztorc
-  copy:
-    remote_src: yes
+- name: symlink a .zpreztorc
+  ansible.builtin.file:
     src: $HOME/documents/git/dotfiles/.zpreztorc
     dest: $HOME/.zprezto/runcoms/zpreztorc
+    state: link
 
-- name: copy a .tmux.conf
-  copy:
-    remote_src: yes
+- name: symlink a .tmux.conf
+  ansible.builtin.file:
     src: $HOME/documents/git/dotfiles/.tmux.conf
     dest: $HOME/.tmux.conf
+    state: link
 
-- name: copy a .vimrc
-  copy:
-    remote_src: yes
+- name: symlink a .vimrc
+  ansible.builtin.file:
     src: $HOME/documents/git/dotfiles/.vimrc
     dest: $HOME/.vimrc
+    state: link
 
 - name: add ppa git
   become: yes
