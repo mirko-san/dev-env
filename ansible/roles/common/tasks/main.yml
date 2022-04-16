@@ -17,20 +17,6 @@
     repo: git@github.com:mirko-san/dotfiles.git
     dest: $HOME/documents/git/dotfiles
 
-- name: git clone prezto config
-  ignore_errors: yes
-  ansible.builtin.git:
-    repo: git@github.com:sorin-ionescu/prezto.git
-    dest: $HOME/.zprezto
-
-- name: setup prezto
-  ignore_errors: yes
-  shell: |
-    setopt EXTENDED_GLOB
-    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-    done
-
 - name: chsh
   become: yes
   command: chsh -s /bin/zsh
@@ -41,11 +27,6 @@
     dest: $HOME/.gitconfig
     state: link
 
-- name: symlink a .zpreztorc
-  ansible.builtin.file:
-    src: $HOME/documents/git/dotfiles/.zpreztorc
-    dest: $HOME/.zprezto/runcoms/zpreztorc
-    state: link
 
 - name: symlink a .tmux.conf
   ansible.builtin.file:
