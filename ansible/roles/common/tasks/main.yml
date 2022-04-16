@@ -40,6 +40,21 @@
     dest: $HOME/.vimrc
     state: link
 
+- name: create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: zplug
+  register: zplug_tempdir
+
+- name: download zpulg installer
+  get_url:
+    url: https://raw.githubusercontent.com/zplug/installer/master/installer.zsh
+    dest: '{{ zplug_tempdir.path }}/installer.zsh'
+
+- name: install zpulg
+  ignore_errors: yes
+  shell: cat '{{ zplug_tempdir.path }}/installer.zsh'
+
 - name: add ppa git
   become: yes
   apt_repository:
