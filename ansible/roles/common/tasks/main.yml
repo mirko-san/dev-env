@@ -17,20 +17,6 @@
     repo: git@github.com:mirko-san/dotfiles.git
     dest: $HOME/documents/git/dotfiles
 
-- name: git clone prezto config
-  ignore_errors: yes
-  ansible.builtin.git:
-    repo: git@github.com:sorin-ionescu/prezto.git
-    dest: $HOME/.zprezto
-
-- name: setup prezto
-  ignore_errors: yes
-  shell: |
-    setopt EXTENDED_GLOB
-    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-    done
-
 - name: chsh
   become: yes
   command: chsh -s /bin/zsh
@@ -41,10 +27,10 @@
     dest: $HOME/.gitconfig
     state: link
 
-- name: symlink a .zpreztorc
+- name: symlink a .zshrc
   ansible.builtin.file:
-    src: $HOME/documents/git/dotfiles/.zpreztorc
-    dest: $HOME/.zprezto/runcoms/zpreztorc
+    src: $HOME/documents/git/dotfiles/.zshrc
+    dest: $HOME/.zshrc
     state: link
 
 - name: symlink a .tmux.conf
@@ -58,6 +44,21 @@
     src: $HOME/documents/git/dotfiles/.vimrc
     dest: $HOME/.vimrc
     state: link
+
+- name: create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: zplug
+  register: zplug_tempdir
+
+- name: download zpulg installer
+  get_url:
+    url: https://raw.githubusercontent.com/zplug/installer/master/installer.zsh
+    dest: '{{ zplug_tempdir.path }}/installer.zsh'
+
+- name: install zpulg
+  ignore_errors: yes
+  shell: cat '{{ zplug_tempdir.path }}/installer.zsh'
 
 - name: add ppa git
   become: yes
